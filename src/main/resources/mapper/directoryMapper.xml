@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="home.example.echoLog.mapper.DirectoryMapper">
+        <select id="getRootDirectory"
+                resultType="home.example.echoLog.model.Directory">
+            SELECT * FROM directories WHERE name = "" and parent_id IS NULL
+        </select>
+
+        <select id="getDirectoryByName"
+                parameterType="home.example.echoLog.model.Directory"
+                resultType="home.example.echoLog.model.Directory">
+            <![CDATA[
+                SELECT * FROM directories
+                         WHERE name = #{name}
+            ]]>
+                <choose>
+                   <when test="parent_id == null">
+                       AND parent_id IS NULL
+                    </when>
+                    <otherwise>
+                        AND parent_id = #{parent_id}
+                    </otherwise>
+                </choose>
+        </select>
+
+        <select id="getDirectoryById"
+                parameterType="long"
+                resultType="home.example.echoLog.model.Directory">
+            SELECT * FROM directories WHERE dir_id = #{dir_id}
+        </select>
+
+        <insert id="addDirectory"
+                parameterType="home.example.echoLog.model.Directory">
+            INSERT INTO directories (name, parent_id, created_at)
+            VALUES (#{name}, #{parent_id}, NOW())
+        </insert>
+
+        <select id="getChildrenDirectories"
+                parameterType="long"
+                resultType="home.example.echoLog.model.Directory">
+            SELECT * FROM directories WHERE parent_id = #{parent_id}
+        </select>
+    </mapper>
