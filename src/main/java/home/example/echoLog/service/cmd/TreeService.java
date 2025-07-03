@@ -25,8 +25,7 @@ public class TreeService {
             throw new IllegalArgumentException("Path cannot be null or empty");
         }
         String[] paths = path.split("/");
-        Directory current = directoryMapper.getDirectoryByName(directoryMapper.getRootDirectory())
-                .orElseThrow(() -> new IllegalArgumentException("Root directory does not exist"));
+        Directory current = directoryMapper.getRootDirectory();
         for (int i = 1; i < paths.length - 1; i++) {
             String p = paths[i];
             Directory parameter = Directory.builder()
@@ -40,11 +39,13 @@ public class TreeService {
     }
 
     private JSONObject buildTreeJSON(Long dir_id, Integer limit) {
+        JSONObject node = new JSONObject();
+        if(limit == 0) {
+            return node; // Return empty node if limit is reached
+        }
         if (dir_id == null) {
             throw new IllegalArgumentException("Directory ID cannot be null");
         }
-        int paramLimit = limit != null ? limit : 3; // Default limit if not provided
-        JSONObject node = new JSONObject();
         Directory directory = directoryMapper.getDirectoryById(dir_id)
                 .orElseThrow(() -> new IllegalArgumentException("Directory does not exist: " + dir_id));
         List<Directory> childrenDirectories = directoryMapper.getChildrenDirectories(dir_id);
@@ -56,7 +57,7 @@ public class TreeService {
             node.put("name", directory.getName());
             node.put("dir_id", directory.getDir_id());
             node.put("children", childrenDirectories.stream()
-                    .map(child -> buildTreeJSON(child.getDir_id(), paramLimit-1))
+                    .map(child -> buildTreeJSON(child.getDir_id(), limit-1))
                     .collect(Collectors.toList()));
         }
         return node;

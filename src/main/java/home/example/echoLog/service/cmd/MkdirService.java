@@ -19,9 +19,8 @@ public class MkdirService {
             throw new IllegalArgumentException("Path cannot be null or empty");
         }
         String[] paths = path.split("/");
-        Directory current = directoryMapper.getDirectoryByName(rootDirectory())
-                .orElseThrow(() -> new IllegalArgumentException("Root directory does not exist"));
-        for(int i = 1; i < paths.length - 2; i++) {
+        Directory current = rootDirectory();
+        for(int i = 1; i < paths.length - 1; i++) {
             String p = paths[i];
             Directory parameter = Directory.builder()
                     .name(p)

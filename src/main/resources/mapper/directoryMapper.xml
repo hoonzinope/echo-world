@@ -11,8 +11,18 @@
         <select id="getDirectoryByName"
                 parameterType="home.example.echoLog.model.Directory"
                 resultType="home.example.echoLog.model.Directory">
-            SELECT * FROM directories
-                     WHERE id = #{name} and parent_id = #{parent_id}
+            <![CDATA[
+                SELECT * FROM directories
+                         WHERE name = #{name}
+            ]]>
+                <choose>
+                   <when test="parent_id == null">
+                       AND parent_id IS NULL
+                    </when>
+                    <otherwise>
+                        AND parent_id = #{parent_id}
+                    </otherwise>
+                </choose>
         </select>
 
         <select id="getDirectoryById"

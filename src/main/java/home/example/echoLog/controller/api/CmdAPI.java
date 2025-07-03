@@ -46,23 +46,28 @@ public class CmdAPI {
         if (parsedCommand.containsKey(ExecType.ECHO)) {
             response.put("type", ExecType.ECHO);
             response.put("message", parsedCommand.get(ExecType.ECHO));
-        } else if (parsedCommand.containsKey(ExecType.MKDIR)) {
+        }
+        else if (parsedCommand.containsKey(ExecType.MKDIR)) {
             mkdirService.addDirectory(parsedCommand.get(ExecType.MKDIR));
             response.put("type", ExecType.MKDIR);
             response.put("message", "Directory created: " + parsedCommand.get(ExecType.MKDIR));
-        } else if (parsedCommand.containsKey(ExecType.CD)) {
+        }
+        else if (parsedCommand.containsKey(ExecType.CD)) {
             response.put("currentPath", cdService.changeDirectory(parsedCommand.get(ExecType.CD)));
             response.put("type", ExecType.CD);
             response.put("message", "Changed directory to: " + parsedCommand.get(ExecType.CD));
-        } else if (parsedCommand.containsKey(ExecType.LS)) {
+        }
+        else if (parsedCommand.containsKey(ExecType.LS)) {
             response.put("directories", lsService.listDirectories(parsedCommand.get(ExecType.LS)));
             response.put("type", ExecType.LS);
             response.put("message", "Listed directories at: " + parsedCommand.get(ExecType.LS));
-        } else if (parsedCommand.containsKey(ExecType.TREE)) {
+        }
+        else if (parsedCommand.containsKey(ExecType.TREE)) {
             response.put("tree", treeService.getTree(parsedCommand.get(ExecType.TREE)));
             response.put("type", ExecType.TREE);
             response.put("message", "Tree structure at: " + parsedCommand.get(ExecType.TREE));
-        } else {
+        }
+        else {
             return ResponseEntity.badRequest().body(null);
         }
         return ResponseEntity.ok(response);

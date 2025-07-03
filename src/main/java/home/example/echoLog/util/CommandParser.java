@@ -37,11 +37,8 @@ public class CommandParser {
         else if (exec.equals("/echo")) {
             result.put(ExecType.ECHO, arg);
         } else if(directoryCommands().contains(exec)) {
-            if (arg.startsWith("/")) {
-                arg = path + arg; // prepend path if argument starts with "/"
-            } else if (!arg.startsWith("~") && !arg.startsWith("/")) {
-                arg = path + "/" + arg; // prepend path if argument does not start with "~" or "/"
-            }
+            arg = getArgs(path, arg); // prepend path to argument
+
             if (exec.equals("/mkdir")) {
                 result.put(ExecType.MKDIR, arg);
             } else if (exec.equals("/cd")) {
@@ -64,5 +61,21 @@ public class CommandParser {
         commands.add("/ls");
         commands.add("/tree");
         return commands;
+    }
+
+    public String getArgs(String path, String arg){
+        if(path.endsWith("/")){
+            if(arg.startsWith("/")) {
+                return path + arg.substring(1); // prepend path if argument starts with "/"
+            }else{
+                return path + arg; // prepend path if argument does not start with "/"
+            }
+        }else{
+            if(arg.startsWith("/")) {
+                return path + arg; // prepend path if argument starts with "/"
+            }else{
+                return path + "/" + arg; // prepend path if argument does not start with "/"
+            }
+        }
     }
 }
