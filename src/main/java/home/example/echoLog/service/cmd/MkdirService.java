@@ -37,6 +37,9 @@ public class MkdirService {
                 .name(lastPath)
                 .parent_id(current.getDir_id())
                 .build();
+        if (directoryMapper.getDirectoryByName(newDirectory).isPresent()) {
+            throw new IllegalArgumentException("Directory already exists: " + lastPath);
+        }
         directoryMapper.addDirectory(newDirectory);
     }
 
