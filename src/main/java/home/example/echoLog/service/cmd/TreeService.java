@@ -49,13 +49,11 @@ public class TreeService {
         Directory directory = directoryMapper.getDirectoryById(dir_id)
                 .orElseThrow(() -> new IllegalArgumentException("Directory does not exist: " + dir_id));
         List<Directory> childrenDirectories = directoryMapper.getChildrenDirectories(dir_id);
+        node.put("name", directory.getName());
+        node.put("dir_id", directory.getDir_id());
         if( childrenDirectories.isEmpty()) {
-            node.put("name", directory.getName());
-            node.put("dir_id", directory.getDir_id());
             node.put("children", childrenDirectories);
         }else{
-            node.put("name", directory.getName());
-            node.put("dir_id", directory.getDir_id());
             node.put("children", childrenDirectories.stream()
                     .map(child -> buildTreeJSON(child.getDir_id(), limit-1))
                     .collect(Collectors.toList()));
