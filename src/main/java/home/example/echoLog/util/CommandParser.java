@@ -3,10 +3,7 @@ package home.example.echoLog.util;
 import home.example.echoLog.model.type.ExecType;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class CommandParser {
@@ -54,13 +51,15 @@ public class CommandParser {
         return result;
     }
 
-    private List<String> directoryCommands() {
-        List<String> commands = new ArrayList<>();
-        commands.add("/mkdir");
-        commands.add("/cd");
-        commands.add("/ls");
-        commands.add("/tree");
-        return commands;
+    private Set<String> directoryCommands() {
+        Set<String> commandSet = new HashSet<>();
+        commandSet.add("/echo");
+        commandSet.add("/mkdir");
+        commandSet.add("/cd");
+        commandSet.add("/ls");
+        commandSet.add("/tree");
+
+        return commandSet;
     }
 
     public String getArgs(String path, String arg){
