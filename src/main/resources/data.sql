@@ -1,0 +1,1 @@
+INSERT INTO directories (name, parent_id) VALUES ('', NULL);
