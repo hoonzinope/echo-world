@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" th:charset="UTF-8"/>
+    <title>Terminal Log</title>
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            padding: 20px;
+        }
+        .terminal {
+            max-width: 800px;
+            margin: auto;
+        }
+        .logs {
+            max-height: 70vh;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            border: 1px solid #0f0;
+            padding: 10px;
+        }
+        .input-line {
+            display: flex;
+            align-items: center;
+        }
+        .current-path {
+            font-weight: bold;
+            color: #0f0;
+        }
+        input {
+            background: transparent;
+            border: none;
+            color: #0f0;
+            flex: 1;
+            font-family: monospace;
+            font-size: 16px;
+            outline: none;
+        }
+        .light {
+            background: #eee;
+            color: #111;
+        }
+        .light .current-path,
+        .light input {
+            color: #111;
+        }
+    </style>
+</head>
+<body>
+<div class="terminal" id="terminal">
+    <div class="logs" id="logs">
+        [12:01] welcome to the echo world.
+    </div>
+    <div class="input-line">
+        <span class="current-path" id="currentPath">/</span>&nbsp;&gt;&nbsp;
+        <input type="text" id="cmdInput" autocomplete="off" />
+    </div>
+</div>
+
+<script th:src="${/js/index.js}"></script>
+</body>
+</html>
