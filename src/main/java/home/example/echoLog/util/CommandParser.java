@@ -29,6 +29,7 @@ public class CommandParser {
 
 
         if(!exec.startsWith("/")) { // default command = "echo"
+            arg = String.join(" ", commands);
             result.put(ExecType.ECHO, arg);
         }
         else if (exec.equals("/echo")) {

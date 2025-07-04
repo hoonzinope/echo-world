@@ -5,7 +5,7 @@
     <mapper namespace="home.example.echoLog.mapper.DirectoryMapper">
         <select id="getRootDirectory"
                 resultType="home.example.echoLog.model.Directory">
-            SELECT * FROM directories WHERE name = "" and parent_id IS NULL
+            SELECT * FROM directories WHERE name = '' and parent_id IS NULL
         </select>
 
         <select id="getDirectoryByName"

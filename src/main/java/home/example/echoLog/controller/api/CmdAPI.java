@@ -3,9 +3,10 @@ package home.example.echoLog.controller.api;
 import home.example.echoLog.model.dto.CommandRequestDTO;
 import home.example.echoLog.model.type.ExecType;
 import home.example.echoLog.service.cmd.CdService;
-import home.example.echoLog.service.cmd.LsService;
 import home.example.echoLog.service.cmd.MkdirService;
+import home.example.echoLog.service.cmd.LsService;
 import home.example.echoLog.service.cmd.TreeService;
+import home.example.echoLog.service.cmd.EchoService;
 import home.example.echoLog.util.CommandParser;
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +24,19 @@ public class CmdAPI {
     private final MkdirService mkdirService;
     private final LsService lsService;
     private final TreeService treeService;
+    private final EchoService echoService;
     public CmdAPI(CommandParser commandParser,
                   CdService cdService,
                   MkdirService mkdirService,
                   LsService lsService,
-                  TreeService treeService) {
+                  TreeService treeService,
+                  EchoService echoService) {
         this.commandParser = commandParser;
         this.cdService = cdService;
         this.mkdirService = mkdirService;
         this.lsService = lsService;
         this.treeService = treeService;
+        this.echoService = echoService;
     }
 
     @PostMapping("/api/cmd") // parameter path, command to execute
@@ -44,8 +48,9 @@ public class CmdAPI {
         String command = commandRequestDTO.getCommand();
         Map<ExecType, String> parsedCommand = commandParser.parseCommand(path, command);
         if (parsedCommand.containsKey(ExecType.ECHO)) {
+            boolean success = echoService.addLog(path, parsedCommand.get(ExecType.ECHO));
             response.put("type", ExecType.ECHO);
-            response.put("message", parsedCommand.get(ExecType.ECHO));
+            response.put("message", success ? "Log added successfully" : "Failed to add log");
         }
         else if (parsedCommand.containsKey(ExecType.MKDIR)) {
             mkdirService.addDirectory(parsedCommand.get(ExecType.MKDIR));
