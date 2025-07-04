@@ -1,9 +1,12 @@
 package home.example.echoLog.controller.api;
 
-import org.json.simple.JSONObject;
-import org.springframework.http.ResponseEntity;
+import home.example.echoLog.service.StreamService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 public class StreamAPI {
@@ -12,20 +15,20 @@ public class StreamAPI {
     // You can implement methods to handle streaming logs, such as:
     // - @GetMapping("/api/stream/logs") to stream logs in real-time
 
-    @GetMapping("/api/stream/logs")
-    public ResponseEntity<JSONObject> streamLogs() {
-        // Placeholder for streaming logs logic
-        // In a real implementation, you would return a stream of log data
-        JSONObject response = new JSONObject();
-        try {
-            // Simulate streaming logs
-            String logData = "Streaming logs..."; // Replace with actual log streaming logic
-            response.put("status", "success");
-            response.put("logs", logData);
-        } catch (Exception e) {
-            response.put("status", "error");
-            response.put("message", e.getMessage());
+    private final StreamService streamService;
+    public StreamAPI(StreamService streamService) {
+        this.streamService = streamService;
+    }
+
+    @GetMapping(value="/api/stream/logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter streamLogs(
+            @RequestParam(name = "path") String path) {
+        System.out.println("StreamAPI.streamLogs called with path: " + path);
+        // path decode
+        if (path == null || path.isEmpty()) {
+            throw new IllegalArgumentException("Path cannot be null or empty");
         }
-        return ResponseEntity.ok(response);
+        // Add the emitter to the stream service
+        return streamService.addEmitter(path);
     }
 }

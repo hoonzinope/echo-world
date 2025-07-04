@@ -4,6 +4,7 @@ import home.example.echoLog.mapper.DirectoryMapper;
 import home.example.echoLog.mapper.EchoLogMapper;
 import home.example.echoLog.model.Directory;
 import home.example.echoLog.model.EchoLog;
+import home.example.echoLog.service.StreamService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,9 +12,11 @@ public class EchoService {
 
     private final EchoLogMapper echoLogMapper;
     private final DirectoryMapper directoryMapper;
-    public EchoService(EchoLogMapper echoLogMapper, DirectoryMapper directoryMapper) {
+    private final StreamService streamService;
+    public EchoService(EchoLogMapper echoLogMapper, DirectoryMapper directoryMapper, StreamService streamService) {
         this.echoLogMapper = echoLogMapper;
         this.directoryMapper = directoryMapper;
+        this.streamService = streamService;
     }
 
     public boolean addLog(String path, String message) {
@@ -52,8 +55,14 @@ public class EchoService {
             System.err.println("Error adding log: " + e.getMessage());
             return false; // Indicating that the log was not successfully added
         }
-        System.out.println("Log added at " + path + ": " + message);
         return true; // Indicating that the log was successfully added
     }
 
+
+    public boolean appendLog(String path, String message) {
+        this.addLog(path, message);
+        // Optionally, you can also push the log to a stream service if needed
+        streamService.pushLogToPath(path, message);
+        return true; // Indicating that the log was successfully appended
+    }
 }
