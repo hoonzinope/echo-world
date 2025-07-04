@@ -45,6 +45,13 @@
                     }
                 }
             });
+
+            // input이 포커스 안되어 있으면 자동으로 포커스
+            document.addEventListener('click', function(e) {
+                if (document.activeElement !== input) {
+                    input.focus();
+                }
+            });
         },
         handleCommand : function(cmd) {
             if (cmd === '/light') {
@@ -58,8 +65,10 @@
                 echoLogs.appendLog('> dark mode on');
             }
             else if (cmd === '/help') {
-                echoLogs.appendLog('> commands: /cd /light /dark /ls /mkdir /tree /echo /help');
+                // echoLogs.appendLog('> commands: /cd /light /dark /ls /mkdir /tree /echo /help');
+                echoLogs.appendLog('> commands: /light /dark /help')
             }
+            /*
             else if (cmd.startsWith('/cd ')) {
                 let path = cmd.substring(4).trim();
                 if (path) {
@@ -87,6 +96,7 @@
                 let text = cmd.substring(6).trim();
                 echoLogs.echo(text);
             }
+             */
             else {
                 echoLogs.echo(cmd);
             }
@@ -95,11 +105,41 @@
             console.log(`Changing directory to: ${path}`);
             // delete sse connection
             echoLogs.eventSource.close();
-            // reconnect sse with new path
-            echoLogs.connectSSE(path);
-            // change currentpath
-            currentPath = path;
-            pathElem.textContent = currentPath;
+            // eval valid path
+            let data = {
+                "path" : currentPath,
+                "command": "/cd " + path
+            };
+            let url = "/api/cmd";
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    echoLogs.appendLog('> error changing directory');
+                }
+            }).then(data => {
+                console.log(data);
+                // reconnect sse with new path
+                let responsePath = data.currentPath.name;
+                if (responsePath == "undefined" || responsePath == null) {
+                    echoLogs.appendLog('> invalid path');
+                    return;
+                }else{
+                    if (responsePath == "") { path = "/"; }
+                    else { path = responsePath; }
+                    echoLogs.connectSSE(path);
+                    currentPath = path;
+                    pathElem.textContent = currentPath;
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
         },
         ls : function() {
             // show current directory contents
@@ -136,6 +176,7 @@
                 path: currentPath,
                 command: "/mkdir " + path
             };
+            console.log(data);
             let url = "/api/cmd";
             fetch(url, {
                 method: 'POST',
@@ -145,13 +186,12 @@
                 body: JSON.stringify(data)
             }).then(response => {
                 if (response.ok) {
-                    echoLogs.appendLog(`> created directory ${path}`);
-                    if(!currentPath.endsWith("/")) { path = currentPath + "/" + path;}
-                    else { path = currentPath + path; }
-                    currentPath = path;
+                    return response.json();
                 } else {
                     echoLogs.appendLog('> error creating directory');
                 }
+            }).then(data => {
+                echoLogs.appendLog(`> created directory ${path}`);
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -179,10 +219,30 @@
                     echoLogs.appendLog('> error displaying directory tree');
                 }
             }).then(data => {
-                console.log(data);
+                echoLogs.drawDirTree(data);
             }).catch(error => {
                 console.error('Error:', error);
             });
+        },
+        drawDirTree : function(data) {
+            console.log(data);
+            let tree = data.tree;
+            /*
+                { children: [
+                        { children : [], name : "dir1", dir_id : 2 },
+                    ], name : "", dir_id : 1 }
+             */
+            echoLogs.recursiveTree(tree, 0);
+        },
+        recursiveTree : function(node, depth) {
+            if(node.name == "") { node.name = "root"; }
+            let indent = ' '.repeat(depth * 2);
+            echoLogs.appendLog(`${indent}L${node.name}`);
+            if (node.children && node.children.length > 0) {
+                node.children.forEach(child => {
+                    echoLogs.recursiveTree(child, depth + 1);
+                });
+            }
         },
         echo : function(text) {
             // add new log
@@ -214,20 +274,10 @@
         },
         currentDateTime : function() {
             let now = new Date();
-            let datetime = now.toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            // format datetime
-            datetime = datetime.replace(',', '');
-            datetime = datetime.replace(/\//g, '-');
-            datetime = datetime.replace(/ /g, 'T');
-            datetime = datetime.replace(/:/g, '-');
-            return datetime;
+            // format date and time hh:mm
+            let hours = String(now.getHours()).padStart(2, '0');
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
         }
     }
 })();

@@ -50,11 +50,12 @@ public class HistoryGetService {
                         .orElseThrow(() -> new IllegalArgumentException("Directory does not exist: " + p));
             }
             // Assuming echoLogMapper is injected and available
-            HistoryRequestDTO request = new HistoryRequestDTO();
-            request.setDir_id(current.getDir_id());
-            request.setLog_seq(log_seq);
-            request.setLimit(limit);
-            return createResponse(echoLogMapper.getEchoLogsLastN(request));
+            HistoryRequestDTO request = HistoryRequestDTO.builder()
+                    .dir_id(current.getDir_id())
+                    .log_seq(log_seq)
+                    .limit(limit)
+                    .build();
+            return createResponse(echoLogMapper.getEchoLogsByDirId(request));
         }catch (Exception e) {
             return createErrorResponse(e.getMessage());
         }

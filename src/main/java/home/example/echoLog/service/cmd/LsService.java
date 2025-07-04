@@ -24,6 +24,14 @@ public class LsService {
         Directory current = rootDirectory();
         for(int i = 1; i < paths.length; i++) {
             String p = paths[i];
+            if(p.equals("..")){
+                if(current.getParent_id() == null) {
+                    throw new IllegalArgumentException("Already at root directory, cannot go up: " + p);
+                }
+                current = directoryMapper.getDirectoryById(current.getParent_id())
+                        .orElseThrow(() -> new IllegalArgumentException("Parent directory does not exist"));
+                continue;
+            }
             Directory parameter = Directory.builder()
                     .name(p)
                     .parent_id(current.getDir_id())

@@ -3,23 +3,25 @@
       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     <mapper namespace="home.example.echoLog.mapper.EchoLogMapper">
-        <insert id="insertEchoLog"
-                parameterType="home.example.echoLog.model.EchoLog">
-            INSERT INTO echo_logs (dir_id, message, created_at)
-            VALUES (#{dir_id}, #{message}, NOW())
+        <insert id="insertEchoLog" parameterType="home.example.echoLog.model.EchoLog">
+            INSERT INTO echo_logs (message, dir_id, created_at)
+            VALUES (#{message}, #{dir_id}, NOW())
         </insert>
 
-        <select id="getEchoLogsLastN"
-                parameterType="home.example.echoLog.model.dto.HistoryRequestDTO"
+        <select id="getEchoLogByDirId"
+                parameterType="int"
                 resultType="home.example.echoLog.model.EchoLog">
-            SELECT * FROM echo_logs
-            WHERE dir_id = #{dir_id}
-            <if test="log_seq != null">
-              <![CDATA[
-                AND log_seq < #{log_seq}
-                ]]>
-            </if>
-            ORDER BY created_at DESC
-            LIMIT #{limit}
+            <![CDATA[
+                SELECT * FROM echo_logs WHERE dir_id = #{dir_id}
+            ]]>
+                <if test="log_seq != null">
+                    <![CDATA[
+                        AND log_seq < #{log_seq}
+                    ]]>
+                </if>
+            <![CDATA[
+                limit #{limit}
+                order by created_at DESC
+            ]]>
         </select>
     </mapper>

@@ -75,6 +75,6 @@ public class CmdAPI {
         else {
             return ResponseEntity.badRequest().body(null);
         }
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 }

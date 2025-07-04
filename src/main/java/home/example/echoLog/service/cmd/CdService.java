@@ -19,6 +19,7 @@ public class CdService {
         }
         String[] paths = path.split("/");
         Directory current = rootDirectory();
+        String resultPath = "";
         for(int i = 1; i < paths.length; i++) {
             String p = paths[i];
             if(p.equals("..")){
@@ -27,6 +28,7 @@ public class CdService {
                 }
                 current = directoryMapper.getDirectoryById(current.getParent_id())
                         .orElseThrow(() -> new IllegalArgumentException("Parent directory does not exist"));
+                resultPath = resultPath.substring(0, resultPath.lastIndexOf('/'));
                 continue;
             }
             Directory parameter = Directory.builder()
@@ -37,8 +39,11 @@ public class CdService {
             if (!next.isPresent()) {
                 throw new IllegalArgumentException("Directory does not exist: " + p);
             }
+            resultPath += "/" + p;
+            System.out.println(resultPath);
             current = next.get();
         }
+        current.setName(resultPath);
         return current;
     }
 
