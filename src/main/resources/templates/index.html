@@ -52,7 +52,7 @@
 <body>
 <div class="terminal" id="terminal">
     <div class="logs" id="logs">
-        [12:01] welcome to the echo world.
+        <span id="currentTime"></span> welcome to the echo world.
     </div>
     <div class="input-line">
         <span class="current-path" id="currentPath">/</span>&nbsp;&gt;&nbsp;
@@ -60,6 +60,16 @@
     </div>
 </div>
 
-<script th:src="${/js/index.js}"></script>
+<script th:src="@{/js/index.js}"></script>
+<script>
+    function updateTime() {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('currentTime').textContent = `[${hh}:${mm}]`;
+    }
+    updateTime();
+    setInterval(updateTime, 1000 * 60);
+</script>
 </body>
 </html>
