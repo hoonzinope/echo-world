@@ -41,17 +41,17 @@
             if (cmd === '/light') {
                 document.body.classList.add('light');
                 theme = 'light';
-                appendLog('> light mode on');
+                echoLogs.appendLog('> light mode on');
             } else if (cmd === '/dark') {
                 document.body.classList.remove('light');
                 theme = 'dark';
-                appendLog('> dark mode on');
+                echoLogs.appendLog('> dark mode on');
             } else if (cmd === '/help') {
-                appendLog('> commands: /cd /light /dark /ls /mkdir /pwd /tree /echo /help');
+                echoLogs.appendLog('> commands: /cd /light /dark /ls /mkdir /pwd /tree /echo /help');
             }
         },
         appendLog : function(cmd) {
-            logs.textContent += `\n${text}`;
+            logs.textContent += `\n${cmd}`;
             logs.scrollTop = logs.scrollHeight;
         }
     }
