@@ -40,9 +40,9 @@
                     console.log(data);
                     if (data && data.logs) {
                         data.logs.forEach(log => {
-                            hour = log.created_at.substring(11, 13).padStart(2, '0');
-                            minute = log.created_at.substring(14, 16).padStart(2, '0');
-                            msg = log.message;
+                            let hour = log.created_at.substring(11, 13).padStart(2, '0');
+                            let minute = log.created_at.substring(14, 16).padStart(2, '0');
+                            let msg = log.message;
                             echoLogs.appendLog_withHourMinute(hour, minute, msg);
                         });
                     } else {
