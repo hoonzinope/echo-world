@@ -26,8 +26,8 @@
             echoLogs.connectSSE(currentPath);
         },
         getPrevLog : function() {
-            let path = "/"
-            let url = "/api/history?path=" + encodeURIComponent(path)+ "&limit=100";
+            let path = currentPath;
+            let url = "/api/history?path=" + encodeURIComponent(path) + "&limit=100";
             fetch(url)
                 .then(response => {
                     if (response.ok) {
