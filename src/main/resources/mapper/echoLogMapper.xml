@@ -9,19 +9,15 @@
         </insert>
 
         <select id="getEchoLogByDirId"
-                parameterType="int"
+                parameterType="home.example.echoLog.model.dto.HistoryRequestDTO"
                 resultType="home.example.echoLog.model.EchoLog">
-            <![CDATA[
                 SELECT * FROM echo_logs WHERE dir_id = #{dir_id}
-            ]]>
                 <if test="log_seq != null">
                     <![CDATA[
                         AND log_seq < #{log_seq}
                     ]]>
                 </if>
-            <![CDATA[
-                limit #{limit}
                 order by created_at DESC
-            ]]>
+                limit #{limit}
         </select>
     </mapper>

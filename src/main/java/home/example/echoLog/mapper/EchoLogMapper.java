@@ -11,5 +11,5 @@ import java.util.Optional;
 @Mapper
 public interface EchoLogMapper {
     void insertEchoLog(EchoLog echoLog);
-    List<EchoLog> getEchoLogsByDirId(HistoryRequestDTO historyRequestDTO);
+    List<EchoLog> getEchoLogByDirId(HistoryRequestDTO historyRequestDTO);
 }

@@ -20,8 +20,38 @@
             currentPath = '/';
             theme = 'dark';
 
+            echoLogs.getPrevLog();
+
             echoLogs.bindInputEvents();
             echoLogs.connectSSE(currentPath);
+        },
+        getPrevLog : function() {
+            let path = "/"
+            let url = "/api/history?path=" + encodeURIComponent(path)+ "&limit=100";
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(data => {
+                    console.log(data);
+                    if (data && data.logs) {
+                        data.logs.forEach(log => {
+                            hour = log.created_at.substring(11, 13).padStart(2, '0');
+                            minute = log.created_at.substring(14, 16).padStart(2, '0');
+                            msg = log.message;
+                            echoLogs.appendLog_withHourMinute(hour, minute, msg);
+                        });
+                    } else {
+                        echoLogs.appendLog('> no logs found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching logs:', error);
+                });
         },
         connectSSE : function(path) {
             let url = "/api/stream/logs?path=" + encodeURIComponent(path);
@@ -270,6 +300,11 @@
             let datetime = echoLogs.currentDateTime();
             // append log
             logs.textContent += `\n > [${datetime}] ${cmd}`;
+            logs.scrollTop = logs.scrollHeight;
+        },
+        appendLog_withHourMinute : function(hour, minute, cmd) {
+            // append log without date
+            logs.textContent += `\n >[${hour}:${minute}] ${cmd}`;
             logs.scrollTop = logs.scrollHeight;
         },
         currentDateTime : function() {

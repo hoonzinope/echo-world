@@ -9,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -55,7 +56,7 @@ public class HistoryGetService {
                     .log_seq(log_seq)
                     .limit(limit)
                     .build();
-            return createResponse(echoLogMapper.getEchoLogsByDirId(request));
+            return createResponse(echoLogMapper.getEchoLogByDirId(request));
         }catch (Exception e) {
             return createErrorResponse(e.getMessage());
         }
@@ -66,6 +67,7 @@ public class HistoryGetService {
 
         long min_log_seq = logs.isEmpty() ? 0 : logs.get(logs.size() - 1).getLog_seq();
         JSONArray logsArray = new JSONArray();
+        Collections.reverse(logs);
         logs.forEach(log -> {
             JSONObject logJson = new JSONObject();
             logJson.put("log_seq", log.getLog_seq());
