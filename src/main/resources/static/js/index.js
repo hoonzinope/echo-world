@@ -304,7 +304,7 @@
         },
         appendLog_withHourMinute : function(hour, minute, cmd) {
             // append log without date
-            logs.textContent += `\n >[${hour}:${minute}] ${cmd}`;
+            logs.textContent += `\n > [${hour}:${minute}] ${cmd}`;
             logs.scrollTop = logs.scrollHeight;
         },
         currentDateTime : function() {
