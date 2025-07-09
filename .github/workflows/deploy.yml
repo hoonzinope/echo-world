@@ -1,0 +1,20 @@
+name: Deploy echo log project
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Build Docker Image
+        run: docker build --build-arg ACTIVE_PROFILE=dev -t echo-log:latest .
+
+      - name: Deploy Docker Container
+        run: docker compose -f /Users/hoonzi/Documents/docker_v/docker-compose.yml up -d
