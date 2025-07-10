@@ -20,4 +20,11 @@
                 order by created_at DESC
                 limit #{limit}
         </select>
+
+        <delete id="deleteLogByDate">
+            <![CDATA[
+                DELETE FROM echo_logs
+                WHERE created_at < NOW() - INTERVAL 7 DAY
+            ]]>
+        </delete>
     </mapper>
