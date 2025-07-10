@@ -16,6 +16,7 @@ public class DeleteLogService {
     }
 
     @Scheduled(cron = "0 0 * * * *")
+    @Transactional
     public void purgeLogs() {
         try {
             echoLogMapper.deleteLogByDate();
