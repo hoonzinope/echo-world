@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface EchoLogMapper {
     void insertEchoLog(EchoLog echoLog);
     List<EchoLog> getEchoLogByDirId(HistoryRequestDTO historyRequestDTO);
+    void deleteLogByDate();
 }
